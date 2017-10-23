@@ -2,8 +2,9 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
+import os
 
-engine = create_engine("mysql+pymysql://root:root@127.0.0.1:3306/lqtest?charset=utf8", max_overflow=5, encoding="utf-8")
+engine = create_engine(os.environ.get('TEST_DATABASE_URLY'), max_overflow=5, encoding="utf-8")
 
 Base = declarative_base()
 
