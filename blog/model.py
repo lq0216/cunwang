@@ -12,7 +12,7 @@ Base = declarative_base()
 class Users(Base):
    __tablename__ = 'users'
    id = Column(Integer, primary_key=True, autoincrement=True)
-   name = Column(String(32))
+   name = Column(String(32),)
    extra = Column(String(16))
 
 class Boke(Base):

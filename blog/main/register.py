@@ -18,33 +18,22 @@ from blog.db import DbBoke
 from blog.main import api
 from blog.model import Boke
 
+from flask import Blueprint
 
-def login_check(f):
-    @wraps(f)
-    def decorator(*args, **kwargs):
-        token = request.headers.get('token')
-        if not token:
-            return jsonify({'code': 0, 'message': '需要验证'})
+register = Blueprint('register', __name__,)
 
-        phone_number = current_app.redis.get('token:%s' % token)
-        if not phone_number or token != current_app.redis.hget('user:%s' % phone_number, 'token'):
-            return jsonify({'code': 2, 'message': '验证信息错误'})
 
-        return f(*args, **kwargs)
-
-    return decorator
-
-@api.before_request
+@register.before_request
 def init_session():
     g.db_boke = DbBoke()
 
 
-@api.teardown_request
+@register.teardown_request
 def close_session(exception):
     g.db_boke.db_session.close()
 
 
-@api.route('/test')
+@register.route('/test')
 def show_entries():
     entries = g.db_boke.getAll()
     return render_template('show_entries.html', entries=entries)
@@ -80,7 +69,7 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('api.show_entries'))
 
-@api.route('/register')
+@register.route('/register', methods=["POST"])
 def register():
     error = None
     if request.method == 'POST':
